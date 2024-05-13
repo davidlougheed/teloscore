@@ -57,7 +57,7 @@ def score_seqs(seq1: str, seq2: str) -> float:
     # cigar = r.cigar
     # print(seq1, seq2, cigar.decode, r.score)
 
-    final_score = r.score / (MATCH_SCORE * len(qs))
+    final_score: float = max(r.score / (MATCH_SCORE * len(qs)), 0.0)
     return final_score
 
 
