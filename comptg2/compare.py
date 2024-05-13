@@ -54,9 +54,6 @@ def score_seqs(seq1: str, seq2: str) -> float:
 
     r = parasail.nw_trace_striped_32(qs, dbs, GAP_OPEN_PENALTY, GAP_EXTEND_PENALTY, SCORING_MATRIX)
 
-    # cigar = r.cigar
-    # print(seq1, seq2, cigar.decode, r.score)
-
     final_score: float = max(r.score / (MATCH_SCORE * len(qs)), 0.0)
     return final_score
 
@@ -69,6 +66,10 @@ def build_telo_from_row(row: dict) -> TeloType:
         "tvr_consensus": tvr,
         "tvr_consensus_encoded": re_encode_log(tvr),
     }
+
+
+def _fmt_allele(telo: TeloType) -> str:
+    return f"({telo['allele_id']}) {telo['arm']}"
 
 
 def compare_samples(file1: str, file2: str):
@@ -89,10 +90,13 @@ def compare_samples(file1: str, file2: str):
                 continue
             f2_arms.append(build_telo_from_row(row))
 
-    for f1a in f1_arms:
-        for f2a in f2_arms:
+    matrix: list[list[float]] = [[0.0 for _j in f1_arms] for _i in f2_arms]
+
+    for i, f1a in enumerate(f1_arms):
+        for j, f2a in enumerate(f2_arms):
             # print("---------")
             score = score_seqs(f1a["tvr_consensus_encoded"], f2a["tvr_consensus_encoded"])
+            matrix[j][i] = score
             if score > 0.8:
                 print(
                     "passed",
@@ -107,3 +111,9 @@ def compare_samples(file1: str, file2: str):
                 )
                 print(f1a["tvr_consensus_encoded"])
                 print(f2a["tvr_consensus_encoded"])
+
+    with open("./out.tsv", "w") as fh:
+        header = "\t".join(["", *(_fmt_allele(f1a) for f1a in f1_arms)])
+        fh.write(f"{header}\n")
+        for j, f2a in enumerate(f2_arms):
+            fh.write("\t".join([_fmt_allele(f2a), *map(str, matrix[j])]) + "\n")
