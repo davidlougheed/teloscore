@@ -7,7 +7,7 @@ Telomeric allele scoring tool for output from Telogator2.
 
 `comptg2` is a telomeric allele scoring tool for output from [Telogator2](https://github.com/zstephens/telogator2).
 
-Copyright (C) 2024  McGill University
+Copyright (C) 2024  McGill University, David Lougheed
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
