@@ -1,11 +1,12 @@
 # `comptg2`
 
-Telomeric allele scoring tool for output from Telogator2.
+A telomeric allele comparison-scoring tool for output from [Telogator2](https://github.com/zstephens/telogator2).
 
 
 ## Copyright Notice
 
-`comptg2` is a telomeric allele scoring tool for output from [Telogator2](https://github.com/zstephens/telogator2).
+`comptg2` is a telomeric allele comparison-scoring tool for output from 
+[Telogator2](https://github.com/zstephens/telogator2).
 
 Copyright (C) 2024  McGill University, David Lougheed
 
