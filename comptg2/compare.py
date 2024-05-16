@@ -111,6 +111,7 @@ def _fmt_alignment(seq1: str, seq2: str, cigar: Iterable[tuple[int, int]]) -> st
     s2 = list(dbs)
 
     for op, count in cigar:
+        # CIGAR operations are detailed here: https://samtools.github.io/hts-specs/SAMv1.pdf section 1.4 list item 6
         if op in (0, 7, 8):
             for _ in range(count):
                 chars1.append(s1.pop(0))
@@ -133,7 +134,7 @@ def _fmt_alignment(seq1: str, seq2: str, cigar: Iterable[tuple[int, int]]) -> st
     return f"{''.join(chars1)}\n{''.join(line_chars)}\n{''.join(chars2)}"
 
 
-def compare_samples(file1: str, file2: str):
+def compare_samples(file1: str, file2: str, out_file: str):
     f1_arms: list[TeloType] = []
     f2_arms: list[TeloType] = []
 
@@ -155,7 +156,6 @@ def compare_samples(file1: str, file2: str):
 
     for i, f1a in enumerate(f1_arms):
         for j, f2a in enumerate(f2_arms):
-            # print("---------")
             score, cigar = score_seqs(f1a["tvr_consensus_encoded"], f2a["tvr_consensus_encoded"])
             matrix[j][i] = score
             if score > 0.8:
@@ -165,7 +165,7 @@ def compare_samples(file1: str, file2: str):
                     f"{_fmt_alignment(f1a['tvr_consensus_encoded'], f2a['tvr_consensus_encoded'], cigar)}"
                 )
 
-    with open("./out.tsv", "w") as fh:
+    with open(out_file, "w") as fh:
         header = "\t".join(["", *(_fmt_allele(f1a) for f1a in f1_arms)])
         fh.write(f"{header}\n")
         for j, f2a in enumerate(f2_arms):
