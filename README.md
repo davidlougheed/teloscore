@@ -3,6 +3,34 @@
 A telomeric allele comparison-scoring tool for output from [Telogator2](https://github.com/zstephens/telogator2).
 
 
+## Installation
+
+`comptg2` can be installed from PyPI using the following command:
+
+```bash
+pip install comptg2
+```
+
+
+## Usage
+
+The following is an example showing how `comptg2` is to be used:
+
+```bash
+comptg2 ./sample_01_child.tsv ./sample_02_parent_1.tsv ./out.tsv
+```
+
+
+## Output Format
+
+**Definition:** TVR = telomere variable region
+
+The output is a TSV matrix with the TVR of the first sample (child) across the 
+columns, and those of the second sample (parent) across the rows. Each entry in
+the matrix is a floating-point number between 0 and 1, representing a custom 
+similarity score between the two TVRs.
+
+
 ## Copyright Notice
 
 `comptg2` is a telomeric allele comparison-scoring tool for output from 
