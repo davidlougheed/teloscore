@@ -6,8 +6,8 @@ from .compare import compare_samples
 
 def main():
     parser = argparse.ArgumentParser(
-        prog="fasta-checksum-utils",
-        description="A library and command-line utility for checksumming FASTA files and individual contigs.",
+        prog="comptg2",
+        description="A telomeric allele comparison-scoring tool for output from Telogator2.",
     )
 
     parser.add_argument("--version", action="version", version=__version__)
