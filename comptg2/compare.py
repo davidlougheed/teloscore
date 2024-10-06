@@ -50,7 +50,7 @@ def decode_cigar(encoded_cigar: list[int]) -> Iterable[tuple[int, int]]:
 
 class TeloType(TypedDict):
     arm: str
-    allele_id: int
+    allele_id: str  # used to be an int, but we can also have ^\d\di$ pattern allele IDs
     tvr_consensus: str
     tvr_consensus_encoded: str
 
@@ -90,7 +90,7 @@ def build_telo_from_row(row: dict) -> TeloType:
     tvr = row["tvr_consensus"]
     return {
         "arm": row["#chr"],
-        "allele_id": int(row["allele_id"]),
+        "allele_id": row["allele_id"],
         "tvr_consensus": tvr,
         "tvr_consensus_encoded": re_encode_log(tvr),
     }
