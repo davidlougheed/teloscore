@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "comptg2"
-version = "0.1.0"
+version = "0.1.1"
 description = "Telomeric allele scoring tool for output from Telogator2."
 authors = ["David Lougheed <david.lougheed@mail.mcgill.ca>"]
 license = "GPL-3.0"
@@ -14,7 +14,7 @@ python = "^3.10"
 parasail = "^1.3.4"
 
 [tool.poetry.group.dev.dependencies]
-black = "^24.4.2"
+black = "^24.8.0"
 
 [build-system]
 requires = ["poetry-core"]
