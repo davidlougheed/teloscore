@@ -12,24 +12,50 @@ __all__ = [
 
 
 GAP_OPEN_PENALTY = 3
-GAP_EXTEND_PENALTY = 1
+GAP_EXTEND_PENALTY = 2
 MATCH_SCORE = 5
 CANONICAL_MATCH_SCORE = 1
+CANONICAL_VS_INDEL_MISMATCH_SCORE = -1  # between negative mismatch score and positive canonical match score...
+DUBIOUS_MATCH_SCORE = 2
 MISMATCH_SCORE = -4
 
-COMPRESSION_LOG_BASE = 5
+COMPRESSION_LOG_BASE = 4
 
 # TODO: could maybe implement a more advanced scoring matrix
 # Alphabet is from https://github.com/zstephens/telogator2/blob/main/resources/kmers.tsv
 # 'A' is 'UNKNOWN_LETTER'
 SCORING_ALPHABET = "ACDEFGHIKLMNPRSQTVWY"
 CANONICAL_LETTER = "C"
-SCORING_MATRIX = parasail.matrix_create("ACDEFGHIKLMNPRSQTVWY", MATCH_SCORE, MISMATCH_SCORE)
 CANONICAL_INDEX = SCORING_ALPHABET.index(CANONICAL_LETTER)
+DUBIOUS_LETTERS = "VWY"
+
+SCORING_MATRIX = parasail.matrix_create(SCORING_ALPHABET, MATCH_SCORE, MISMATCH_SCORE)
+
+MATCH_SCORES = {
+    tuple(CANONICAL_LETTER): CANONICAL_MATCH_SCORE,
+    tuple(DUBIOUS_LETTERS): MATCH_SCORE,
+    tuple(set(SCORING_ALPHABET) - {CANONICAL_LETTER} - set(DUBIOUS_LETTERS)): MATCH_SCORE,
+}
+
+# There are a lot of canonical motifs
+#  - give them a lower match score to weight importance to patterns of non-canonical motifs.
 SCORING_MATRIX[CANONICAL_INDEX, CANONICAL_INDEX] = CANONICAL_MATCH_SCORE
 
+CANONICAL_INDEL_INDEX = SCORING_ALPHABET.index("T")
+CANONICAL_INDEL_DUBIOUS_INDEX = SCORING_ALPHABET.index("V")
 
-logging.basicConfig(level=logging.DEBUG)
+# Give canonical letters matching with canonical indel variant a lesser penalty, since these types of errors should be
+# more likely to be sequencing error.
+SCORING_MATRIX[CANONICAL_INDEX, CANONICAL_INDEL_INDEX] = CANONICAL_VS_INDEL_MISMATCH_SCORE
+SCORING_MATRIX[CANONICAL_INDEL_INDEX, CANONICAL_INDEX] = CANONICAL_VS_INDEL_MISMATCH_SCORE
+# TODO: dubious
+
+# Give dubious letter self-matches a lower positive score, to reduce their influence on the final score.
+for d in DUBIOUS_LETTERS:
+    SCORING_MATRIX[SCORING_ALPHABET.index(d), SCORING_ALPHABET.index(d)] = DUBIOUS_MATCH_SCORE
+
+
+logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger("comptg2")
 
@@ -46,6 +72,12 @@ def decode_cigar(encoded_cigar: list[int]) -> Iterable[tuple[int, int]]:
 
 
 # End taken from STRkit
+
+
+def match_score_for_letter(x: str):
+    for k, v in MATCH_SCORES.items():
+        if x in k:
+            return v
 
 
 class TeloType(TypedDict):
@@ -81,7 +113,7 @@ def score_seqs(seq1: str, seq2: str) -> tuple[float, tuple[tuple[int, int], ...]
     r = parasail.nw_trace_striped_32(qs, dbs, GAP_OPEN_PENALTY, GAP_EXTEND_PENALTY, SCORING_MATRIX)
     cigar = r.cigar
 
-    total_possible_score: int = sum((CANONICAL_MATCH_SCORE if qc == CANONICAL_LETTER else MATCH_SCORE) for qc in qs)
+    total_possible_score: int = sum(map(match_score_for_letter, qs))
     final_score: float = max(r.score / total_possible_score, 0.0)
     return final_score, tuple(decode_cigar(cigar.seq))
 
@@ -158,8 +190,8 @@ def compare_samples(file1: str, file2: str, out_file: str):
         for j, f2a in enumerate(f2_arms):
             score, cigar = score_seqs(f1a["tvr_consensus_encoded"], f2a["tvr_consensus_encoded"])
             matrix[j][i] = score
-            if score > 0.8:
-                logger.info(f"Found score >0.8: {_fmt_allele(f1a)} against {_fmt_allele(f2a)}; score: {score:.3f}")
+            if score > 0.6:
+                logger.info(f"Found score >0.6: {_fmt_allele(f1a)} against {_fmt_allele(f2a)}; score: {score:.3f}")
                 logger.info(
                     f"  Alignment: \n"
                     f"{_fmt_alignment(f1a['tvr_consensus_encoded'], f2a['tvr_consensus_encoded'], cigar)}"
