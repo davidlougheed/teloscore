@@ -17,7 +17,13 @@ pip install comptg2
 The following is an example showing how `comptg2` is to be used:
 
 ```bash
-comptg2 ./sample_01_child.tsv ./sample_02_parent_1.tsv ./out.tsv
+comptg2 compare ./sample_01_child.tsv ./sample_02_parent_1.tsv ./out.tsv
+```
+
+The output matrix can then be plotted using the following command:
+
+```bash
+comptg2 plot ./out.tsv
 ```
 
 
