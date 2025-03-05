@@ -1,12 +1,13 @@
 import argparse
 
 from . import __version__
-from .compare import compare_samples
+from .compare import Scoring1, Scoring2, compare_samples
 from .plot import plot_versus
 
 
 def cmd_compare(args):
-    compare_samples(args.f1, args.f2, args.out)
+    scoring = Scoring2() if args.scoring == "2" else Scoring1()
+    compare_samples(scoring, args.f1, args.f2, args.out)
 
 
 def cmd_plot(args):
@@ -26,6 +27,14 @@ def main():
     # Compare sub-parser -----------------------------------------------------------------------------------------------
 
     sp_compare = subparsers.add_parser("compare")
+
+    default_scoring = "2"
+    sp_compare.add_argument(
+        "--scoring",
+        choices=("1", "2"),
+        help=f"Scoring system to use (1 or 2). Default: {default_scoring}",
+        default=default_scoring,
+    )
 
     sp_compare.add_argument("f1", type=str, help="First Telogator2 TSV file.")
     sp_compare.add_argument("f2", type=str, help="Second Telogator2 TSV file.")
