@@ -22,7 +22,7 @@ comptg2 compare ./sample_01_child.tsv ./sample_02_parent_1.tsv ./out.tsv
 
 > Note: There are currently two scoring systems: `1` and `2`, corresponding 
 > to the scoring systems found in the v0.1.x release and the v0.2.x release.
-> The default is "2". You may specify which scoring system you wish to use
+> The default is `2`. You may specify which scoring system you wish to use
 > by passing `--scoring #`, where `#` is `1` or `2`.
 
 The output matrix can then be plotted using the following command:
