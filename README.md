@@ -20,6 +20,11 @@ The following is an example showing how `comptg2` is to be used:
 comptg2 compare ./sample_01_child.tsv ./sample_02_parent_1.tsv ./out.tsv
 ```
 
+> Note: There are currently two scoring systems: `1` and `2`, corresponding 
+> to the scoring systems found in the v0.1.x release and the v0.2.x release.
+> The default is "2". You may specify which scoring system you wish to use
+> by passing `--scoring #`, where `#` is `1` or `2`.
+
 The output matrix can then be plotted using the following command:
 
 ```bash
@@ -42,7 +47,7 @@ similarity score between the two TVRs.
 `comptg2` is a telomeric allele comparison-scoring tool for output from 
 [Telogator2](https://github.com/zstephens/telogator2).
 
-Copyright (C) 2024  McGill University, David Lougheed
+Copyright (C) 2024-2025  McGill University, David Lougheed
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
