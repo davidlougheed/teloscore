@@ -30,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v3
         id: build-upload
         with:
-          name: comptg2-dist
+          name: teloscore-dist
           path: dist
           retention-days: 1
 
@@ -46,7 +46,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v3
         with:
-          name: comptg2-dist
+          name: teloscore-dist
           path: dist
 
       - name: Check current directory

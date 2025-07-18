@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "comptg2"
-version = "0.3.1"
+name = "teloscore"
+version = "0.4.0"
 description = "Telomeric allele scoring tool for output from Telogator2."
 authors = ["David Lougheed <david.lougheed@mail.mcgill.ca>"]
 license = "GPL-3.0"
 readme = "README.md"
 
 [tool.poetry.scripts]
-comptg2 = "comptg2.entry:main"
+teloscore = "teloscore.entry:main"
 
 [tool.poetry.dependencies]
 python = "^3.10"

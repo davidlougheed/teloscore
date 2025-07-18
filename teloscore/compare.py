@@ -170,7 +170,7 @@ class Scoring2(BaseScoringSystem):
 
 logging.basicConfig(level=logging.INFO)
 
-logger = logging.getLogger("comptg2")
+logger = logging.getLogger("teloscore")
 
 
 # Taken from STRkit: https://github.com/davidlougheed/strkit/blob/master/strkit/call/cigar.py

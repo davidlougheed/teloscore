@@ -16,7 +16,7 @@ def cmd_plot(args):
 
 def main():
     parser = argparse.ArgumentParser(
-        prog="comptg2",
+        prog="teloscore",
         description="A telomeric allele comparison-scoring tool for output from Telogator2.",
     )
 
@@ -47,7 +47,7 @@ def main():
     # Plot sub-parser --------------------------------------------------------------------------------------------------
 
     sp_plot = subparsers.add_parser("plot")
-    sp_plot.add_argument("file", type=str, help="Output from comptg2 compare function.")
+    sp_plot.add_argument("file", type=str, help="Output from teloscore compare function.")
     sp_plot.set_defaults(func=cmd_plot)
 
     # ------------------------------------------------------------------------------------------------------------------

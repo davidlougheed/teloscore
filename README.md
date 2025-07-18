@@ -1,4 +1,4 @@
-# `comptg2`
+# TeloScore
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14984162.svg)](https://doi.org/10.5281/zenodo.14984162)
 
@@ -7,19 +7,19 @@ A telomeric allele comparison-scoring tool for output from [Telogator2](https://
 
 ## Installation
 
-`comptg2` can be installed from PyPI using the following command:
+TeloScore can be installed from PyPI using the following command:
 
 ```bash
-pip install comptg2
+pip install teloscore
 ```
 
 
 ## Usage
 
-The following is an example showing how `comptg2` is to be used:
+The following is an example showing how TeloScore is to be used:
 
 ```bash
-comptg2 compare ./sample_01_child.tsv ./sample_02_parent_1.tsv ./out.tsv
+teloscore compare ./sample_01_child.tsv ./sample_02_parent_1.tsv ./out.tsv
 ```
 
 > Note: There are currently two scoring systems: `1` and `2`, corresponding 
@@ -30,7 +30,7 @@ comptg2 compare ./sample_01_child.tsv ./sample_02_parent_1.tsv ./out.tsv
 The output matrix can then be plotted using the following command:
 
 ```bash
-comptg2 plot ./out.tsv
+teloscore plot ./out.tsv
 ```
 
 
@@ -46,7 +46,7 @@ similarity score between the two TVRs.
 
 ## Copyright Notice
 
-`comptg2` is a telomeric allele comparison-scoring tool for output from 
+TeloScore is a telomeric allele comparison-scoring tool for output from 
 [Telogator2](https://github.com/zstephens/telogator2).
 
 Copyright (C) 2024-2025  McGill University, David Lougheed
