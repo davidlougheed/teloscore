@@ -59,9 +59,13 @@ class BaseScoringSystem(ABC):
         pass
 
     def build_telo_from_row(self, row: dict) -> TeloType:
+        # required columns in row: #chr/chr    allele_id    tvr_consensus
         tvr = row["tvr_consensus"]
+        arm = row.get("#chr", row.get("chr", ""))
+        if not arm:
+            raise ValueError(f"Could not get chromosome arm from row: {row}")
         return {
-            "arm": row["#chr"],
+            "arm": arm,
             "allele_id": row["allele_id"],
             "tvr_consensus": tvr,
             "tvr_consensus_encoded": self.encode_seq(tvr),
