@@ -27,8 +27,7 @@ jobs:
         run: python -m poetry build
 
       - name: Store build output
-        uses: actions/upload-artifact@v3
-        id: build-upload
+        uses: actions/upload-artifact@v4
         with:
           name: teloscore-dist
           path: dist
@@ -44,7 +43,7 @@ jobs:
 
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: teloscore-dist
           path: dist
