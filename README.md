@@ -1,7 +1,7 @@
 # TeloScore
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14984162.svg)](https://doi.org/10.5281/zenodo.14984162)
-[![PyPI version](https://badge.fury.io/py/bento-lib.svg)](https://badge.fury.io/py/bento-lib)
+[![PyPI version](https://badge.fury.io/py/teloscore.svg)](https://badge.fury.io/py/teloscore)
 
 A telomeric allele comparison-scoring tool for output from [Telogator2](https://github.com/zstephens/telogator2).
 
