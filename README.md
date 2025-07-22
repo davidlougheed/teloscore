@@ -34,6 +34,18 @@ teloscore plot ./out.tsv
 ```
 
 
+## Input Format
+
+TeloScore's `compare` subcommand is primarily designed to accept the 
+[TSV output file from Telogator2](https://github.com/zstephens/telogator2?tab=readme-ov-file#output-files).
+However, any TSV file with the following columns would work:
+
+* `#chr` / `chr`: Chromosome arm
+* `allele_id`: ID for this specific allele (see Telogator2)
+* `tvr_consensus`: Allele TVR consensus sequence, in the Telogator2 base encoding 
+  (https://github.com/zstephens/telogator2/blob/main/resources/kmers.tsv)
+
+
 ## Output Format
 
 **Definition:** TVR = telomere variable region
