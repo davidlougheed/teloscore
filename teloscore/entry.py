@@ -1,7 +1,8 @@
 import argparse
 
 from . import __version__
-from .compare import Scoring1, Scoring2, compare_samples
+from .compare import compare_samples
+from .scoring import Scoring1, Scoring2
 from .plot import plot_versus
 
 
