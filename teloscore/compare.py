@@ -156,6 +156,7 @@ class Scoring2(BaseScoringSystem):
         for k, v in self.MATCH_SCORES.items():
             if x in k:
                 return v
+        raise ValueError(f"Invalid letter encountered: {x}")
 
     def score_seqs(self, seq1: str, seq2: str) -> tuple[float, tuple[tuple[int, int], ...]]:
         qs, dbs = (seq1, seq2) if len(seq1) <= len(seq2) else (seq2, seq1)
@@ -235,24 +236,26 @@ def _fmt_alignment(seq1: str, seq2: str, cigar: Iterable[tuple[int, int]]) -> st
     return f"{''.join(chars1)}\n{''.join(line_chars)}\n{''.join(chars2)}"
 
 
-def compare_samples(scoring: BaseScoringSystem, file1: str, file2: str, out_file: str):
-    f1_arms: list[TeloType] = []
-    f2_arms: list[TeloType] = []
+def _read_sample_files(scoring: BaseScoringSystem, file1: str, file2: str) -> tuple[list[TeloType], list[TeloType]]:
+    f1_arms: list[TeloType]
+    f2_arms: list[TeloType]
+
+    def filter_row(r: dict) -> bool:
+        """Returns true if a row should be included."""
+        return not (r.get("tvr_len") == "0")  # Flexible TSV format: if tvr_len col doesn't exist, don't crash.
 
     with open(file1, "r") as fh1, open(file2, "r") as fh2:
         r1 = csv.DictReader(fh1, delimiter="\t")
         r2 = csv.DictReader(fh2, delimiter="\t")
 
         row: dict
-        for row in r1:
-            if row["tvr_len"] == "0":
-                continue
-            f1_arms.append(scoring.build_telo_from_row(row))
-        for row in r2:
-            if row["tvr_len"] == "0":
-                continue
-            f2_arms.append(scoring.build_telo_from_row(row))
+        f1_arms = [scoring.build_telo_from_row(row) for row in filter(filter_row, r1)]
+        f2_arms = [scoring.build_telo_from_row(row) for row in filter(filter_row, r2)]
 
+    return f1_arms, f2_arms
+
+
+def _compute_matrix(scoring: BaseScoringSystem, f1_arms: list[TeloType], f2_arms: list[TeloType]) -> list[list[float]]:
     matrix: list[list[float]] = [[0.0 for _j in f1_arms] for _i in f2_arms]
 
     for i, f1a in enumerate(f1_arms):
@@ -269,8 +272,21 @@ def compare_samples(scoring: BaseScoringSystem, file1: str, file2: str, out_file
                     f"{_fmt_alignment(f1a['tvr_consensus_encoded'], f2a['tvr_consensus_encoded'], cigar)}"
                 )
 
+    return matrix
+
+
+def _write_outfile(f1_arms: list[TeloType], f2_arms: list[TeloType], out_file: str, matrix: list[list[float]]):
     with open(out_file, "w") as fh:
         header = "\t".join(["", *(_fmt_allele(f1a) for f1a in f1_arms)])
         fh.write(f"{header}\n")
         for j, f2a in enumerate(f2_arms):
             fh.write("\t".join([_fmt_allele(f2a), *map(str, matrix[j])]) + "\n")
+
+
+def compare_samples(scoring: BaseScoringSystem, file1: str, file2: str, out_file: str):
+    # Step 1: load telomere arms from Telogator2/similar TSV files
+    f1_arms, f2_arms = _read_sample_files(scoring, file1, file2)
+    # Step 2: calculate all-all scoring matrix using TVR sequences
+    matrix: list[list[float]] = _compute_matrix(scoring, f1_arms, f2_arms)
+    # Step 3: write scoring matrix to out_file
+    _write_outfile(f1_arms, f2_arms, out_file, matrix)
