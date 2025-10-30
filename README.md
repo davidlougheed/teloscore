@@ -5,19 +5,27 @@
 
 A telomeric allele comparison-scoring tool for output from [Telogator2](https://github.com/zstephens/telogator2).
 
+## Requirements
+
+* Python 3.10+
+* Tested on macOS and Linux
+
 
 ## Installation
 
-TeloScore can be installed from PyPI using the following command:
+TeloScore can be installed quickly from PyPI using the following command:
 
 ```bash
 pip install teloscore
 ```
 
+TeloScore's dependencies are listed in [`pyproject.toml`](./pyproject.toml).
+
 
 ## Usage
 
-The following is an example showing how TeloScore is to be used:
+The following is an example showing how TeloScore is to be used. The comparison function should finish in under a 
+minute.
 
 ```bash
 teloscore compare ./sample_01_child.tsv ./sample_02_parent_1.tsv ./out.tsv
