@@ -8,7 +8,7 @@ A telomeric allele comparison-scoring tool for output from [Telogator2](https://
 ## Requirements
 
 * Python 3.10+
-* Tested on macOS and Linux
+* Operating system: tested on macOS and Linux
 
 
 ## Installation
