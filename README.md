@@ -5,6 +5,11 @@
 
 A telomeric allele comparison-scoring tool for output from [Telogator2](https://github.com/zstephens/telogator2).
 
+Work done on this project is part of a preprint by 
+[Zhou *et al.*](https://www.biorxiv.org/content/10.1101/2025.10.07.680721v1.abstract).
+If you use this work, please cite this preprint.
+
+
 ## Requirements
 
 * Python 3.10+
@@ -31,7 +36,7 @@ function should finish in under a minute.
 teloscore compare ./sample_01_child.tsv ./sample_02_parent_1.tsv ./out.tsv
 ```
 
-> Note: There are currently two scoring systems: `1` and `2`, corresponding 
+> **Note:** There are currently two scoring systems: `1` and `2`, corresponding
 > to the scoring systems found in the v0.1.x release and the v0.2.x release.
 > The default is `2`. You may specify which scoring system you wish to use
 > by passing `--scoring #`, where `#` is `1` or `2`.
@@ -50,8 +55,9 @@ Ashkenazi trio (HG002-4) in the [`test_data`](./test_data) directory, generated
 using reads obtained from https://downloads.pacbcloud.com/public/revio/2022Q4/.
 
 To run the two parental comparisons with these data using scoring system "1"
-(the scoring system used in the Yuxin *et al.* preprint), run the following
-commands:
+(the scoring system used in the 
+[Zhou *et al.* preprint](https://www.biorxiv.org/content/10.1101/2025.10.07.680721v1.abstract)),
+run the following commands:
 
 ```bash
 # paternal
