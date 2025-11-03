@@ -24,8 +24,8 @@ TeloScore's dependencies are listed in [`pyproject.toml`](./pyproject.toml).
 
 ## Usage
 
-The following is an example showing how TeloScore is to be used. The comparison function should finish in under a 
-minute.
+The following is an example showing how TeloScore is to be used. The comparison
+function should finish in under a minute.
 
 ```bash
 teloscore compare ./sample_01_child.tsv ./sample_02_parent_1.tsv ./out.tsv
@@ -40,6 +40,35 @@ The output matrix can then be plotted using the following command:
 
 ```bash
 teloscore plot ./out.tsv
+```
+
+
+## Running with Example Data
+
+This repository includes Telogator2 telomere calls for the Genome-in-a-Bottle
+Ashkenazi trio (HG002-4) in the [`test_data`](./test_data) directory.
+
+To run the two parental comparisons with these data using scoring system "1"
+(the scoring system used in the Yuxin *et al.* preprint), run the following
+commands:
+
+```bash
+# paternal
+teloscore compare --scoring 1 \
+  ./test_data/tlens_by_allele_HG002.tsv \
+  ./test_data/tlens_by_allele_HG003.tsv \
+  pat.out.tsv
+  
+# maternal
+teloscore compare --scoring 1 \
+  ./test_data/tlens_by_allele_HG002.tsv \
+  ./test_data/tlens_by_allele_HG004.tsv \
+  mat.out.tsv
+
+# You will now have two files, pat.out.tsv and mat.out.tsv. These can now be 
+# plotted using the `teloscore plot` subcommand:
+teloscore plot pat.out.tsv
+teloscore plot mat.out.tsv
 ```
 
 
