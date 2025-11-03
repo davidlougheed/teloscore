@@ -22,4 +22,4 @@ jobs:
       - name: Install dependencies
         run: pip install poetry && poetry install
       - name: Test
-        run: pytest -svv --cov=teloscore --cov-branch
+        run: poetry run pytest -svv --cov=teloscore --cov-branch
