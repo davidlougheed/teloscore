@@ -1,6 +1,8 @@
 import csv
 import logging
-from typing import Iterable
+from io import StringIO
+from pathlib import Path
+from typing import Iterable, TextIO
 
 from .scoring import BaseScoringSystem
 from .types import TeloType
@@ -63,7 +65,7 @@ def _fmt_alignment(seq1: str, seq2: str, cigar: Iterable[tuple[int, int]]) -> st
     return f"{''.join(chars1)}\n{''.join(line_chars)}\n{''.join(chars2)}"
 
 
-def _read_sample_files(scoring: BaseScoringSystem, file1: str, file2: str) -> tuple[list[TeloType], list[TeloType]]:
+def _read_sample_files(scoring: BaseScoringSystem, file1: Path, file2: Path) -> tuple[list[TeloType], list[TeloType]]:
     f1_arms: list[TeloType]
     f2_arms: list[TeloType]
 
@@ -89,9 +91,9 @@ def _compute_matrix(scoring: BaseScoringSystem, f1_arms: list[TeloType], f2_arms
         for j, f2a in enumerate(f2_arms):
             score, cigar = scoring.score_seqs(f1a["tvr_consensus_encoded"], f2a["tvr_consensus_encoded"])
             matrix[j][i] = score
-            if score > scoring.SCORE_LOG_THRESHOLD:
+            if score > scoring.score_log_threshold:
                 logger.info(
-                    f"Found score >{scoring.SCORE_LOG_THRESHOLD}: {_fmt_allele(f1a)} against {_fmt_allele(f2a)}; "
+                    f"Found score >{scoring.score_log_threshold}: {_fmt_allele(f1a)} against {_fmt_allele(f2a)}; "
                     f"score: {score:.3f}"
                 )
                 logger.info(
@@ -102,15 +104,26 @@ def _compute_matrix(scoring: BaseScoringSystem, f1_arms: list[TeloType], f2_arms
     return matrix
 
 
-def _write_outfile(f1_arms: list[TeloType], f2_arms: list[TeloType], out_file: str, matrix: list[list[float]]):
-    with open(out_file, "w") as fh:
+def _write_outfile(
+    f1_arms: list[TeloType],
+    f2_arms: list[TeloType],
+    out_file: Path | StringIO,
+    matrix: list[list[float]],
+):
+    def _write(f: TextIO):
         header = "\t".join(["", *(_fmt_allele(f1a) for f1a in f1_arms)])
-        fh.write(f"{header}\n")
+        f.write(f"{header}\n")
         for j, f2a in enumerate(f2_arms):
-            fh.write("\t".join([_fmt_allele(f2a), *map(str, matrix[j])]) + "\n")
+            f.write("\t".join([_fmt_allele(f2a), *map(str, matrix[j])]) + "\n")
+
+    if isinstance(out_file, StringIO):
+        _write(out_file)
+    else:
+        with open(out_file, "w") as fh:
+            _write(fh)
 
 
-def compare_samples(scoring: BaseScoringSystem, file1: str, file2: str, out_file: str):
+def compare_samples(scoring: BaseScoringSystem, file1: Path, file2: Path, out_file: Path | StringIO):
     # Step 1: load telomere arms from Telogator2/similar TSV files
     f1_arms, f2_arms = _read_sample_files(scoring, file1, file2)
     # Step 2: calculate all-all scoring matrix using TVR sequences

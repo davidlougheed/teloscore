@@ -1,9 +1,57 @@
-import argparse
+import cappa
+import sys
+
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Annotated
 
 from . import __version__
 from .compare import compare_samples
 from .scoring import Scoring1, Scoring2
 from .plot import plot_versus
+
+
+default_scoring = "2"
+
+
+@dataclass
+class Compare:
+    f1: Annotated[Path, cappa.Arg(help="First Telogator2 TSV file.")]
+    f2: Annotated[Path, cappa.Arg(help="Second Telogator2 TSV file.")]
+    out: Annotated[Path, cappa.Arg(help="Output file to write to. This will overwrite any existing file at this path!")]
+
+    scoring: Annotated[
+        str,
+        cappa.Arg(
+            choices=["1", "2"],
+            long=True,
+            help=f"Scoring system to use (1 or 2). Default: {default_scoring}"
+        ),
+    ] = default_scoring
+
+    def __call__(self):
+        scoring = Scoring2() if self.scoring == "2" else Scoring1()
+        compare_samples(scoring, self.f1, self.f2, self.out)
+
+
+@dataclass
+class Plot:
+    file: Annotated[Path, cappa.Arg(help="Output from teloscore compare function.")]
+
+    def __call__(self):
+        plot_versus(self.file)
+
+
+@dataclass
+class Version:
+    def __call__(self):
+        print(__version__)
+
+
+@cappa.command(name="teloscore", description="A telomeric allele comparison-scoring tool for output from Telogator2.")
+@dataclass
+class TeloScore:
+    cmd: cappa.Subcommands[Compare | Plot | Version]
 
 
 def cmd_compare(args):
@@ -15,52 +63,8 @@ def cmd_plot(args):
     plot_versus(args.file)
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        prog="teloscore",
-        description="A telomeric allele comparison-scoring tool for output from Telogator2.",
-    )
-
-    parser.add_argument("--version", action="version", version=__version__)
-
-    subparsers = parser.add_subparsers()
-
-    # Compare sub-parser -----------------------------------------------------------------------------------------------
-
-    sp_compare = subparsers.add_parser("compare")
-
-    default_scoring = "2"
-    sp_compare.add_argument(
-        "--scoring",
-        choices=("1", "2"),
-        help=f"Scoring system to use (1 or 2). Default: {default_scoring}",
-        default=default_scoring,
-    )
-
-    sp_compare.add_argument("f1", type=str, help="First Telogator2 TSV file.")
-    sp_compare.add_argument("f2", type=str, help="Second Telogator2 TSV file.")
-    sp_compare.add_argument(
-        "out", type=str, help="Output file to write to. This will overwrite any existing file at this path!"
-    )
-
-    sp_compare.set_defaults(func=cmd_compare)
-
-    # Plot sub-parser --------------------------------------------------------------------------------------------------
-
-    sp_plot = subparsers.add_parser("plot")
-    sp_plot.add_argument("file", type=str, help="Output from teloscore compare function.")
-    sp_plot.set_defaults(func=cmd_plot)
-
-    # ------------------------------------------------------------------------------------------------------------------
-
-    args = parser.parse_args()
-
-    func = getattr(args, "func", None)
-
-    if func is None:
-        parser.parse_args(("--help",))  # will exit
-
-    func(args)
+def main(argv: list[str] | None = None):
+    cappa.invoke(TeloScore, argv=argv or sys.argv[1:])
 
 
 if __name__ == "__main__":

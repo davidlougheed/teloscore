@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from pathlib import Path
 
 plt.rcParams["figure.figsize"] = [8, 8]
 plt.rcParams["savefig.dpi"] = 300
@@ -8,7 +9,7 @@ plt.rcParams["savefig.dpi"] = 300
 __all__ = ["plot_versus"]
 
 
-def plot_versus(file: str):
+def plot_versus(file: Path):
     data_matrix = []
 
     s2_hdr = []

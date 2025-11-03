@@ -14,12 +14,14 @@ __all__ = [
 
 
 class BaseScoringSystem(ABC):
-    def __init__(self):
-        self.SCORING_MATRIX = self.build_scoring_matrix()
-
     COMPRESSION_LOG_BASE = 4
+    DEFAULT_SCORE_LOG_THRESHOLD = 0.8
 
-    SCORE_LOG_THRESHOLD = 0.8
+    def __init__(self, score_log_threshold: float | None = None):
+        self.SCORING_MATRIX = self.build_scoring_matrix()
+        self.score_log_threshold = (
+            score_log_threshold if score_log_threshold is not None else self.DEFAULT_SCORE_LOG_THRESHOLD
+        )
 
     @abstractmethod
     def build_scoring_matrix(self) -> parasail.Matrix:
@@ -79,7 +81,7 @@ class Scoring1(BaseScoringSystem):
     SCORING_ALPHABET = "ACDEFGHIKLMNPRSQTVWY"
     CANONICAL_LETTER = "C"
 
-    SCORE_LOG_THRESHOLD = 0.8
+    DEFAULT_SCORE_LOG_THRESHOLD = 0.8
 
     def build_scoring_matrix(self) -> parasail.Matrix:
         canonical_index = self.SCORING_ALPHABET.index(self.CANONICAL_LETTER)
@@ -124,7 +126,7 @@ class Scoring2(BaseScoringSystem):
         tuple(set(SCORING_ALPHABET) - {CANONICAL_LETTER} - set(DUBIOUS_LETTERS)): MATCH_SCORE,
     }
 
-    SCORE_LOG_THRESHOLD = 0.6
+    DEFAULT_SCORE_LOG_THRESHOLD = 0.6
 
     def build_scoring_matrix(self) -> parasail.Matrix:
         canonical_index = self.SCORING_ALPHABET.index(self.CANONICAL_LETTER)
