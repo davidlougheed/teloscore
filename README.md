@@ -6,7 +6,7 @@
 A telomeric allele comparison-scoring tool for output from [Telogator2](https://github.com/zstephens/telogator2).
 
 Work done on this project is part of a preprint by 
-[Zhou *et al.*](https://www.biorxiv.org/content/10.1101/2025.10.07.680721v1.abstract).
+[Zhou *et al.*](https://www.biorxiv.org/content/10.1101/2025.10.07.680721v1.abstract)
 If you use this work, please cite this preprint.
 
 
