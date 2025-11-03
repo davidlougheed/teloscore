@@ -34,4 +34,5 @@ def plot_versus(file: Path):
 
     plt.colorbar(im)
 
+    plt.tight_layout()
     plt.show()
