@@ -46,7 +46,8 @@ teloscore plot ./out.tsv
 ## Running with Example Data
 
 This repository includes Telogator2 telomere calls for the Genome-in-a-Bottle
-Ashkenazi trio (HG002-4) in the [`test_data`](./test_data) directory.
+Ashkenazi trio (HG002-4) in the [`test_data`](./test_data) directory, generated
+using reads obtained from https://downloads.pacbcloud.com/public/revio/2022Q4/.
 
 To run the two parental comparisons with these data using scoring system "1"
 (the scoring system used in the Yuxin *et al.* preprint), run the following
